@@ -1,10 +1,11 @@
-EXECS=mpi_hello_world
+EXECS=hello
 MPICC?=mpicc
 
-all: ${EXECS}
+all:
+	${EXECS}
 
-mpi_hello_world: mpi_hello_world.c
-    ${MPICC} -o mpi_hello_world mpi_hello_world.c
+mpi_hello: hello.c
+	${MPICC} -o hello hello.c  ; ./hello
 
 clean:
-    rm ${EXECS}
+	rm ${EXECS}
