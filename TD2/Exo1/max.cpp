@@ -20,6 +20,7 @@ void generation_aleatoire(int taille_globale, int *tab, int graine, int max) {
 
 struct max_loc* calcul_max(int taille_globale, int* tab) {
   // à compléter
+  return 0;
 }
 
 int main(int argc, char **argv) {
@@ -42,6 +43,39 @@ int main(int argc, char **argv) {
         for (int i = 0; i < taille_globale; i++)
             cout << tab_global[i] << " ";
         cout << endl;
+    }
+    int *send_per_proc = new int [nprocs];
+    int *offset = new int [nprocs];
+
+    if (taille_globale%nprocs==0){
+      for (size_t i = 0; i < nprocs; i++) {
+          send_per_proc[i]=taille_globale/nprocs;
+          offset[i]=i*nprocs;
+      }
+    }else{
+      for (size_t i = 0; i < nprocs; i++) {
+          send_per_proc[i]=taille_globale/nprocs;
+          if (i<=taille_globale%nprocs)
+            send_per_proc[i]+=1;
+          offset[i]=i*nprocs +1;
+      }
+
+    }
+    if(pid == root){
+      /*
+      cout<< "offset";
+      for (size_t i = 0; i < nprocs; i++) {
+          cout<<" "<<offset[i];
+      }
+      cout<<endl;
+
+
+      cout<< "send_per_proc";
+      for (size_t i = 0; i < nprocs; i++) {
+          cout<<" "<<send_per_proc[i];
+      }
+      cout<<endl;
+*/
     }
 
     // à compléter avec la distribution du tableau et le calcul du max associé à sa position dans le tableau global
