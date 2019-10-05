@@ -10,7 +10,7 @@ main : $(OBJ)
 	$(MPICXX) -o $@ $^
 
 run:
-	mpirun --oversubscribe -np 4 ./main 18 0 && rm -rf main *.o
+	mpirun --oversubscribe -np 4 ./main 18 0 #&& rm -rf main *.o
 
 .PHONY: clean mrproper
 

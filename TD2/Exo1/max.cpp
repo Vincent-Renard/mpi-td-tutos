@@ -35,6 +35,7 @@ int main(int argc, char **argv) {
     int root = atoi(argv[2]); // le processeur root
 
     int *tab_global;
+      int *tab_local = new int [taille_globale/nprocs +1];
 
     if (pid == root) {
         tab_global = new int[taille_globale];
@@ -46,23 +47,34 @@ int main(int argc, char **argv) {
     }
     int *send_per_proc = new int [nprocs];
     int *offset = new int [nprocs];
-
+    int s=0;
     if (taille_globale%nprocs==0){
       for (size_t i = 0; i < nprocs; i++) {
           send_per_proc[i]=taille_globale/nprocs;
-          offset[i]=i*nprocs;
+        //  offset[i]=i*nprocs;
+        offset[i]=s;
+        s+=send_per_proc[i];
       }
     }else{
       for (size_t i = 0; i < nprocs; i++) {
           send_per_proc[i]=taille_globale/nprocs;
-          if (i<=taille_globale%nprocs)
-            send_per_proc[i]+=1;
-          offset[i]=i*nprocs +1;
+        //  offset[i]=i*nprocs;
+          if (i<taille_globale%nprocs){
+                send_per_proc[i]+=1;
+                //offset[i]+=1;
+          }
+          offset[i]=s;
+          s+=send_per_proc[i];
+
       }
 
     }
+  MPI_Scatterv(tab_global, send_per_proc, offset, MPI_INT,tab_local , send_per_proc[pid], MPI_INT, root, MPI_COMM_WORLD);
+
+
+
     if(pid == root){
-      /*
+
       cout<< "offset";
       for (size_t i = 0; i < nprocs; i++) {
           cout<<" "<<offset[i];
@@ -75,8 +87,18 @@ int main(int argc, char **argv) {
           cout<<" "<<send_per_proc[i];
       }
       cout<<endl;
-*/
+
+
+
+
     }
+
+    cout << "Mon pid est : " << pid << " et le tableau local   est ";
+    for (int i = 0; i < taille_globale/nprocs; i++)
+        cout << tab_local[i] << " ";
+    cout << endl;
+
+
 
     // à compléter avec la distribution du tableau et le calcul du max associé à sa position dans le tableau global
 
