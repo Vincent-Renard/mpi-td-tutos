@@ -20,6 +20,10 @@ void generation_aleatoire(int taille_globale, int *tab, int graine, int max) {
 
 struct max_loc* calcul_max(int taille_globale, int* tab) {
   // à compléter
+
+
+
+
   return 0;
 }
 
@@ -91,16 +95,35 @@ int main(int argc, char **argv) {
 
 
 
+
     }
 
+
+
     cout << "Mon pid est : " << pid << " et le tableau local   est ";
-    for (int i = 0; i < taille_globale/nprocs; i++)
+    for (int i = 0; i < send_per_proc[pid]; i++)
         cout << tab_local[i] << " ";
     cout << endl;
 
 
+    //calcul_max(taille_globale,tab_local);
 
     // à compléter avec la distribution du tableau et le calcul du max associé à sa position dans le tableau global
+  max_loc mx= malloc()
+  mx ={tab_local[0],0};
+for (size_t i = 0; i < send_per_proc[pid]; i++) {
+  if (mx.max<tab_local[i]) {
+    mx.max=tab_local[i];
+    mx.pos=offset[pid]+i;
+  }
+}
+cout<<"p: "<<pid<<" "<<mx.max<<" ["<<mx.pos<<"] "<<endl;
+MPI_Reduce(&mx, &mx, 2, MPI_2INT, MPI_MAXLOC,root, MPI_COMM_WORLD);
+/*
+if (pid == root){
+  cout<<"p: "<<pid<<" "<<mx.max<<" ["<<mx.pos<<"] "<<endl;
+}
+*/
 
     MPI_Finalize();
     return 0;
