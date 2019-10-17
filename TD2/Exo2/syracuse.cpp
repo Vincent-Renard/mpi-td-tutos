@@ -146,18 +146,15 @@ int main ( int argc , char **argv )
   cout << endl;
 
 
-  int tst =test_syracuse(send_per_proc[pid],tab_local);
-  cout << "p : "<<pid << " r:" << tst << endl;
-
-
+  int test_syracuse_retour =test_syracuse(send_per_proc[pid],tab_local);
   int res ; // le min des tests de Syracuse
-  MPI_Reduce( &tst, &res,1, MPI_INT, MPI_MIN,root, MPI_COMM_WORLD);
+  MPI_Reduce( &test_syracuse_retour, &res,1, MPI_INT, MPI_MIN,root, MPI_COMM_WORLD);
 
   /* le résultat (res ) n'est disponible que sur le processeur root */
 
 
   if (pid==root)
-  cout << "test de syracuse : " << res << endl;
+  cout << "test de syracuse final : " << res << endl;
 
   MPI_Finalize() ;
   return 0 ;
