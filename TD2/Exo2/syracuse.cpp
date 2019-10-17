@@ -76,7 +76,7 @@ int main ( int argc , char **argv )
   int cas = atoi(argv[4]);  // les différentes générations possibles
 
   int* tab_global = new int[n];
-
+  int* tab_local = new int[n/nprocs +1];
   if (pid==root) {
     switch(cas) {
       case 0:
@@ -122,12 +122,37 @@ int main ( int argc , char **argv )
         s+=send_per_proc[i];
     }
   }
-  //recuperer le min de tout les res 
-  /* le résultat n'est disponible que sur le processeur root */
+  //recuperer le min de tout les res
   int res;
+  int val_n_moins_un;
+
+
+
+
+  MPI_Scatterv(tab_global, send_per_proc, offset, MPI_INT,tab_local , send_per_proc[pid], MPI_INT, root, MPI_COMM_WORLD);
+
+  if (pid!= nprocs){
+  MPI_Isend(&tab_global[ pid == 0 ? 0 : offset[pid]-1 ],1,MPI_INT,pid+1,42,MPI_COMM_WORLD,&request);
+  }
+  if (pid!= 0){
+  MPI_Irecv(&val_n_moins_un,1,MPI_INT,MPI_ANY_SOURCE,MPI_ANY_TAG,MPI_COMM_WORLD,&request);
+}else{
+  val_n_moins_un=tab_global[0];
+}
+
+
+  cout << "Mon pid est : " << pid << " et le tableau local   est ";
+  for (size_t i = 0; i < send_per_proc[pid]; i++)
+  cout << tab_local[i] << " ";
+  cout << endl;
+  int tst =test_syracuse(send_per_proc[pid],tab_local);
+ MPI_Reduce( &tst, &res,1, MPI_INT, MPI_MIN,root, MPI_COMM_WORLD);
+
+  /* le résultat n'est disponible que sur le processeur root */
+
   /* à compléter */
   if (pid==root)
-  cout << "test de syracuse : " << res << endl;
+    cout << "test de syracuse : " << res << endl;
 
   MPI_Finalize() ;
   return 0 ;
