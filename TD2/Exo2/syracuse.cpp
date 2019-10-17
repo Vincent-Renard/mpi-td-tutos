@@ -91,6 +91,7 @@ int main ( int argc , char **argv )
       default:
       cout << "test syracuse"<< endl;
       syracuse(n,tab_global,x);
+        cout << "syracuse ? "<< test_syracuse(n,tab_global) << endl;
     }
   }
   if (pid==root){
@@ -100,7 +101,7 @@ int main ( int argc , char **argv )
     cout << endl;
   }
 
-  /* à compléter */
+
 
 
   int *send_per_proc = new int [nprocs];
@@ -108,51 +109,55 @@ int main ( int argc , char **argv )
   int s=0;
   if (n%nprocs==0){
     for (size_t i = 0; i < nprocs; i++) {
-        send_per_proc[i]=n/nprocs;
+      send_per_proc[i]=n/nprocs;
       offset[i]=s;
       s+=send_per_proc[i];
     }
   }else{
     for (size_t i = 0; i < nprocs; i++) {
-        send_per_proc[i]=n/nprocs;
-        if (i<n%nprocs){
-              send_per_proc[i]+=1;
-        }
-        offset[i]=s;
-        s+=send_per_proc[i];
+      send_per_proc[i]=n/nprocs;
+      if (i<n%nprocs){
+        send_per_proc[i]+=1;
+      }
+      offset[i]=s;
+      s+=send_per_proc[i];
     }
   }
-  //recuperer le min de tout les res
-  int res;
-  int val_n_moins_un;
 
 
 
 
+  /*GESTION DES GHOSTS*/
+  for (size_t proc_i = 0; proc_i < nprocs; proc_i++) {
+    send_per_proc[proc_i]+=1;
+    if (proc_i!= 0){
+      offset[proc_i]-=1; // Décale le displs pour prndre le ghost de gauche
+    }
+  }
+
+  //Envoi du tableau
   MPI_Scatterv(tab_global, send_per_proc, offset, MPI_INT,tab_local , send_per_proc[pid], MPI_INT, root, MPI_COMM_WORLD);
 
-  if (pid!= nprocs){
-  MPI_Isend(&tab_global[ pid == 0 ? 0 : offset[pid]-1 ],1,MPI_INT,pid+1,42,MPI_COMM_WORLD,&request);
-  }
-  if (pid!= 0){
-  MPI_Irecv(&val_n_moins_un,1,MPI_INT,MPI_ANY_SOURCE,MPI_ANY_TAG,MPI_COMM_WORLD,&request);
-}else{
-  val_n_moins_un=tab_global[0];
-}
 
-
-  cout << "Mon pid est : " << pid << " et le tableau local   est ";
+  // affichage des suites locales
+  cout << "Mon pid est : " << pid << " et la suite locale   est ";
   for (size_t i = 0; i < send_per_proc[pid]; i++)
   cout << tab_local[i] << " ";
   cout << endl;
+
+
   int tst =test_syracuse(send_per_proc[pid],tab_local);
- MPI_Reduce( &tst, &res,1, MPI_INT, MPI_MIN,root, MPI_COMM_WORLD);
+  cout << "p : "<<pid << " r:" << tst << endl;
 
-  /* le résultat n'est disponible que sur le processeur root */
 
-  /* à compléter */
+  int res ; // le min des tests de Syracuse
+  MPI_Reduce( &tst, &res,1, MPI_INT, MPI_MIN,root, MPI_COMM_WORLD);
+
+  /* le résultat (res ) n'est disponible que sur le processeur root */
+
+
   if (pid==root)
-    cout << "test de syracuse : " << res << endl;
+  cout << "test de syracuse : " << res << endl;
 
   MPI_Finalize() ;
   return 0 ;
