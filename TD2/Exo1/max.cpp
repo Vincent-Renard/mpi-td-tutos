@@ -68,10 +68,8 @@ int main(int argc, char **argv) {
   }else{
     for (size_t proc_i = 0; proc_i < nprocs; proc_i++) {
       send_per_proc[proc_i]=taille_globale/nprocs;
-      //  offset[i]=i*nprocs;
       if (proc_i<taille_globale%nprocs){
         send_per_proc[proc_i]+=1;
-        //offset[i]+=1;
       }
       offset[proc_i]=s;
       s+=send_per_proc[proc_i];

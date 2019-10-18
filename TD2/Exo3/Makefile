@@ -4,17 +4,16 @@ OBJ= $(SRC:.cpp=.o)
 EXEC= main
 
 %.o: %.cpp
-	$(MPICXX) -o $@ -c $< 
+	$(MPICXX) -o $@ -c $<
 
-main: $(OBJ) 
+main: $(OBJ)
 	$(MPICXX) -o $@ $^
 
 run: main
-	mpirun -np 4 ./main 10 0
+	mpirun --oversubscribe -np 4 ./main 15 0
 
 clean:
 	@rm -rf *.o
 
 cleanall: clean
 	@rm -rf $(EXEC)
-
