@@ -10,7 +10,7 @@ main: $(OBJ)
 	$(MPICXX) -o $@ $^
 
 run: main
-	mpirun --oversubscribe -np 4 ./main 15 0
+	mpirun --oversubscribe -np 4 ./main 17 0
 
 clean:
 	@rm -rf *.o

@@ -12,24 +12,54 @@ void shift_droite_gauche_circulaire(int n, int* in, int* out)
   int proc_droite=(pid+1)%nprocs;
   int proc_gauche=((pid-1)+nprocs)%nprocs;
 
+
   int moitiee=n/2;
+  int *d = new int[moitiee];
+  int *g = new int[moitiee];
+  int *d_f = new int[moitiee];
+  int *g_f = new int[moitiee];
 
-  if (pid==0){
-    MPI_Send(in,moitiee,MPI_INT,proc_droite,42,MPI_COMM_WORLD);
+  for (size_t i = 0; i < n; i++) {
+    if (i<moitiee){
+        g[i]=in[i];
+    }else{
+      d[i - moitiee]=in[i];
+    }
+  }
 
-    MPI_Send(&(in*sizeof(int)),moitiee,MPI_INT,proc_gauche,42,MPI_COMM_WORLD);
+  if (pid%2==0 ){
+    MPI_Recv(d_f,moitiee,MPI_INT,proc_droite,42,MPI_COMM_WORLD,&status);
+    MPI_Send(d,moitiee,MPI_INT,proc_droite,42,MPI_COMM_WORLD);
+    MPI_Send(g,moitiee,MPI_INT,proc_gauche,42,MPI_COMM_WORLD);
+    MPI_Recv(g_f,moitiee,MPI_INT,proc_gauche,42,MPI_COMM_WORLD,&status);
+    for (size_t i = 0; i < n; i++) {
+      if (i<moitiee){
+          out[i]=g[i];
+      }else{
+        out[i] = d[i - moitiee];
+      }
+    }
+
   }
   else {
-    MPI_Send(in,n,MPI_INT,pid_envoi,42,MPI_COMM_WORLD);
-    MPI_Recv(out,n,MPI_INT,pid_recu,42,MPI_COMM_WORLD,&status);
+    MPI_Recv(d_f,moitiee,MPI_INT,proc_droite,42,MPI_COMM_WORLD,&status);
+    MPI_Send(d,moitiee,MPI_INT,proc_droite,42,MPI_COMM_WORLD);
+    MPI_Send(g,moitiee,MPI_INT,proc_gauche,42,MPI_COMM_WORLD);
+    MPI_Recv(g_f,moitiee,MPI_INT,proc_gauche,42,MPI_COMM_WORLD,&status);
+    for (size_t i = 0; i < n; i++) {
+      if (i<moitiee){
+          out[i]=g[i];
+      }else{
+        out[i] = d[i - moitiee];
+      }
+    }
 
 
   }
 
   if (pid==0){
     //MPI_Recv(&a_local,1,MPI_INT,((pid-1)+nprocs)%nprocs,34,MPI_COMM_WORLD,&status);
-
-  MPI_Recv(out,n,MPI_INT,MPI_ANY_SOURCE,42,MPI_COMM_WORLD,&status);
+    MPI_Recv(out,n,MPI_INT,MPI_ANY_SOURCE,42,MPI_COMM_WORLD,&status);
     MPI_Recv(out,n,MPI_INT,MPI_ANY_SOURCE,42,MPI_COMM_WORLD,&status);
   }
 

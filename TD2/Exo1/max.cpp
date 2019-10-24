@@ -95,9 +95,6 @@ int main(int argc, char **argv) {
   // distribution du tableau global par procs
   MPI_Scatterv(tab_global, send_per_proc, offset, MPI_INT,tab_local , send_per_proc[pid], MPI_INT, root, MPI_COMM_WORLD);
 
-
-
-
   cout << "Mon pid est : " << pid << " et le tableau local   est ";
   for (size_t i = 0; i < send_per_proc[pid]; i++)
   cout << tab_local[i] << " ";
@@ -109,24 +106,22 @@ r = n%nprocs
   count[i] = i < r ? q+1 : q ;
   displ[i] = i < r ? (q+1)*i : q*i +r ;
 */
-
-
-  //calcul_max(taille_globale,tab_local);
-
   // à compléter avec la distribution du tableau et le calcul du max associé à sa position dans le tableau global
   max_loc *mx = calcul_max(send_per_proc[pid],tab_local);
   mx->pos += (offset[pid]);
 
-  max_loc *mx_1 = new max_loc;
+  max_loc *max_on_root = new max_loc;
   cout<<"p: "<<pid<<" "<<mx->max<<" ["<<mx->pos<<"] "<<endl;
   /*REINIT*/
 
-  MPI_Reduce(mx,mx_1, 1, MPI_2INT, MPI_MAXLOC,root, MPI_COMM_WORLD);
+  MPI_Reduce(mx,max_on_root, 1, MPI_2INT, MPI_MAXLOC,root, MPI_COMM_WORLD);
 
   if (pid == root){
-  cout<<"MAX "<<mx_1->max<<" ["<<mx_1->pos<<"] "<<endl;
+  cout<<"MAX "<<max_on_root->max<<" ["<<max_on_root->pos<<"] "<<endl;
+
 }
 
 MPI_Finalize();
+
 return 0;
 }

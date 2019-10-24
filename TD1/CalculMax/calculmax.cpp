@@ -59,7 +59,7 @@
 
     srand(time(NULL)+pid);
     for (int i=0; i<nlocal; i++)
-    tablocal[i] = rand()%100;
+      tablocal[i] = rand()%100;
 
     cout << "je suis " << pid << " et j'ai le tableau local : ";
     for (int i=0; i<nlocal; i++)
