@@ -49,7 +49,7 @@ int main ( int argc , char **argv )
   MPI_Cart_rank(comm_row, coord_temp,&rank_root);
 
   MPI_Reduce(&a,&sum_on_l, 1, MPI_INT, MPI_SUM,rank_root, comm_row);
-  cout<< "l "<<sum_on_l<<endl;
+  //cout<< "l "<<sum_on_l<<endl;
   if(coords[0]==0){
 
     int sum_on_c;
@@ -59,7 +59,7 @@ int main ( int argc , char **argv )
   }
 
 //  cout<<"je marche"<<endl;
-  if (pid== ROOT) {
+  if (pid == ROOT) {
     cout<< "root , somme = "<<sum_on_root<<endl;
   }
 
