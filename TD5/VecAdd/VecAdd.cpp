@@ -66,6 +66,18 @@ void vecadd_omp (int size, float* v1, float* v2, float* v3, int nthreads){
 
 // à compléter : vérification que c1 et c2 sont les mêmes
 void verif(int size, float* c1, float* c2){
+  bool finpropre=1;
+  for (size_t i = 0; i < size; i++) {
+    if (c1[i] !=c2[i] ){
+      cout<<"Erreur de valeur "<<i<<endl;
+      finpropre=0;
+      break;
+    }
+
+  }
+  if (finpropre)
+    cout<<"OK "<<endl;
+
 }
 
 int main(int argc, char* argv[]){
