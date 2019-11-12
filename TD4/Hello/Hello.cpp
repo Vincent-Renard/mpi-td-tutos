@@ -2,7 +2,7 @@
 Pour plus d'informations sur les threads c++11
 http://en.cppreference.com/w/cpp/thread/thread
 et en français mal traduit :
-http://fr.cppreference.com/w/cpp/thread/thread
+http://fr.cppreference.com/w/cpp/thread/thread 
 ************************************************/
 
 #include <iostream>
@@ -26,5 +26,5 @@ int main(int argc, char* argv[]){
   for (int i = 0; i < NUM_THREADS; i++)
     th[i].join();
 
-
+  
 }

@@ -1,15 +1,13 @@
-DIR=$(notdir $(PWD))
-SRC=$(DIR).cpp
-OBJ=$(DIR)
+CC := g++
+CFLAGS := -std=c++11
 
+all : VecAdd
 
-all : $(DIR)
+VecAdd : VecAdd.o
+	$(CC) $(CFLAGS)  -o $@  $<
 
-%.o:%.cpp
-	g++ -std=c++11 -c $< 
-
-$(DIR):$(DIR).o
-	g++ -o $@  $< -lpthread
+%.o : %.cpp
+	$(CC) $(CFLAGS)  -o $@ -c $<
 
 clean:
-	rm -f *.o *~ \#*\# $(DIR)
+	rm -f *.o *~ VecAdd

@@ -1,15 +1,7 @@
-DIR=$(notdir $(PWD))
-SRC=$(DIR).cpp
-OBJ=$(DIR)
+CXXFLAGS=-std=c++11
+LDLIBS= -lpthread
 
-
-all : $(DIR)
-
-%.o:%.cpp
-	g++ -std=c++11 -c $< 
-
-$(DIR):$(DIR).o
-	g++ -o $@  $< -lpthread
+all : Add
 
 clean:
 	rm -f *.o *~ \#*\# $(DIR)
