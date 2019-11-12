@@ -10,6 +10,7 @@ http://fr.cppreference.com/w/cpp/thread/thread
 #include <chrono>
 #include <ctime>
 #include <thread>
+#include <omp.h>
 using namespace std;
 
 /*
@@ -60,7 +61,12 @@ void vecadd_parallel(int size, float* v1, float* v2, float* v3, int nthreads){
 
 /* addition parallèle avec openmp (à compléter) */
 void vecadd_omp (int size, float* v1, float* v2, float* v3, int nthreads){
+  omp_set_num_threads(nthreads);
 
+  #pragma parallel for
+  for (int i = 0; i < size; i++){
+    v3[i] = v1[i] + v2[i];
+  }
 }
 
 
@@ -111,12 +117,12 @@ int main(int argc, char* argv[]){
   BENCHMARK(vecadd_parallel(size, A, B, Cpar, nthreads));
 
   verif(size,Cseq,Cpar);
-/*
+
 
   BENCHMARK(vecadd_omp(size, A, B, Cpar, nthreads));
   verif(size,Cseq, Cpar);
 
-*/
+
 
   delete [] A;
   delete [] B;
