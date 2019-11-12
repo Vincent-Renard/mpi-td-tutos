@@ -72,30 +72,31 @@ void ecriture(int n, int* A)
 
 int main ( int argc , char *argv[] )
 {
-  int pid, nprocs;
+  int pid, nprocs ,n,p;
   MPI_Init (&argc , &argv) ;
   MPI_Comm_rank(MPI_COMM_WORLD, &pid ) ;
   MPI_Comm_size (MPI_COMM_WORLD, &nprocs ) ;
-  MPI_Comm Comm_grille; // Nouveau communicateur pour la topologie cartésienne.
+  MPI_Comm grille; // Nouveau communicateur pour la topologie cartésienne.
 
   //int n = atoi(argv[1]);
-  int n,p ;
-  n=p= sqrt(nprocs);
+
+  n = p = sqrt(nprocs);
 
   srand(pid);
-  int* A_local = generation_mat(n);
-  int* B_local = generation_mat(n);
+  //int* A_local = generation_mat(n);
+  //int* B_local = generation_mat(n);
   int* C_local = new int[n*n];
 
   cout << "je suis " << pid << " et A_local : ";
-  ecriture(n,A_local);
+//  ecriture(n,A_local);
   cout << "je suis " << pid << " et B_local : ";
-  ecriture(n,B_local);
+//  ecriture(n,B_local);
 
   //INIT C
+/*
   for (int i=0; i<n*n; i++)
   C_local[i] = 0;
-
+*/
 
   // A compléter ici étape par étape.
 
@@ -104,12 +105,11 @@ int main ( int argc , char *argv[] )
     int dims[2] = {p,p};
     int periods[2]={0,1};
     reorder=1;
-
-    MPI_Cart_create(MPI_COMM_WORLD, ndims, dims,periods, reorder, &Comm_grille);
+    MPI_Cart_create(MPI_COMM_WORLD, ndims, dims,periods, reorder, &grille);
     int *coords = new int [2];
-    MPI_Cart_coords(Comm_grille, pid,2,coords);
+    MPI_Cart_coords(grille, pid,2,coords);
   //DISTRIBUTION
-  MPI_Cart_rank(Comm_grille, coords,&pid);
+  MPI_Cart_rank(grille, coords,&pid);
   int *send_counts=new int [nprocs];
   int *displs=new int [nprocs];
 
@@ -117,11 +117,11 @@ cout << "je suis " << pid << " et je suis en ("<< coords[0]<<","<< coords[1] <<"
 
 cout << "je suis " << pid << " et C_local : ";
   ecriture(n,C_local);
-
+/*
   delete[] A_local;
   delete[] B_local;
   delete[] C_local;
-
+*/
   MPI_Finalize() ;
 
 

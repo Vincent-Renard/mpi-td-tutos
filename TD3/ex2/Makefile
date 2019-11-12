@@ -10,7 +10,7 @@ main : $(OBJ)
 	$(MPICXX) -o $@ $^
 
 run: main
-	OMPI_MCA_btl=self,tcp mpirun --oversubscribe -np 16 ./main && rm -rf main *.o
+	OMPI_MCA_btl=self,tcp mpirun --oversubscribe -np 9 ./main && rm -rf main *.o
 
 .PHONY: clean mrproper
 
