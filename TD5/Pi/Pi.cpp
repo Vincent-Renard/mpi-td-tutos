@@ -2,7 +2,7 @@
 Pour plus d'informations sur les threads c++11
 http://en.cppreference.com/w/cpp/thread/thread
 et en français mal traduit :
-http://fr.cppreference.com/w/cpp/thread/thread 
+http://fr.cppreference.com/w/cpp/thread/thread
 ************************************************/
 
 #include <random>
@@ -27,22 +27,25 @@ int main (int argc, char* argv[]){
 
   if (argc < 3)
     {
-      cout << "Mauvaise utilisation du programme :\n " << 
+      cout << "Mauvaise utilisation du programme :\n " <<
 	argv[0] << " [nombre d'essais] [nombre de threads]" << endl;
       return 1;
     }
 
   long nb_essais = atoi(argv[1]);
   int nthreads = atoi(argv[2]);
-  
+
+  omp_set_num_threads(nthreads);
+
+  #pragma parallel for
   for(i=0;i<nb_essais; i++)
     {
       x = mrandom();
       y = mrandom();
       if (( x*x + y*y) <= r*r)
-	dansDisque++;
+	       dansDisque++;
     }
-  
+
   pi = 4.0 * ((double)dansDisque/(double)nb_essais);
   cout << "\n " <<  nb_essais << " trials, pi is " << pi  << endl;
 }
