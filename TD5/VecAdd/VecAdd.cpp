@@ -63,7 +63,7 @@ void vecadd_parallel(int size, float* v1, float* v2, float* v3, int nthreads){
 void vecadd_omp (int size, float* v1, float* v2, float* v3, int nthreads){
   omp_set_num_threads(nthreads);
 
-  #pragma parallel for
+  #pragma omp parallel for
   for (int i = 0; i < size; i++){
     v3[i] = v1[i] + v2[i];
   }

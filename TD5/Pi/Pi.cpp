@@ -37,15 +37,17 @@ int main (int argc, char* argv[]){
 
   omp_set_num_threads(nthreads);
 
-  #pragma parallel for
-  for(i=0;i<nb_essais; i++)
-    {
-      x = mrandom();
-      y = mrandom();
-      if (( x*x + y*y) <= r*r)
-	       dansDisque++;
-    }
+
+    #pragma omp parallel for reduction(+ : dansDisque)
+    for(i=0;i<nb_essais; i++)
+      {
+        x = mrandom();
+        y = mrandom();
+        if (( x*x + y*y) <= r*r)
+  	       dansDisque++;
+      }
 
   pi = 4.0 * ((double)dansDisque/(double)nb_essais);
   cout << "\n " <<  nb_essais << " trials, pi is " << pi  << endl;
+
 }

@@ -157,8 +157,12 @@ int main(int argc, char* argv[]){
   int pos4;
   float mx2 = omp_max(v,size,&pos4,nthreads);
 
+
   verif(pos1,mn1,pos3,mx1,pos2,mn2,pos4,mx2);
 
-
+  BENCHMARK(min(v,size,&pos1));
+  BENCHMARK(omp_min(v,size,&pos2,nthreads));
+  BENCHMARK(max(v,size,&pos3));
+  BENCHMARK(omp_max(v,size,&pos4,nthreads));
   delete [] v;
 }
