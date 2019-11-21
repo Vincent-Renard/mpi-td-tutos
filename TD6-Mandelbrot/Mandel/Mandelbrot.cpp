@@ -1,22 +1,81 @@
-#include <cstdlib>
+//#include <cstdlib>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
 #include <cmath>
 #include <ctime>
 #include <cstring>
+
 #include <omp.h>
 
-#include "Fonctions.h"
+
 
 using namespace std;
 
 
+int i4_min ( int i1, int i2 ){
+    int value;
+
+    if ( i1 < i2 )
+    {
+        value = i1;
+    }
+    else
+    {
+        value = i2;
+    }
+    return value;
+}
+//****************************************************************************80
+
+void i4pp_delete ( int **a, int m, int n ){
+    int i;
+
+    for ( i = 0; i < m; i++ )
+    {
+        delete [] a[i];
+    }
+
+    delete [] a;
+
+    return;
+}
+//****************************************************************************80
+
+int **i4pp_new ( int m, int n ){
+    int **a;
+    int i;
+
+    a = new int *[m];
+
+    if ( a == NULL )
+    {
+        cerr << "\n";
+        cerr << "I4PP_NEW - Fatal error!\n";
+        cerr << "  Unable to allocate row pointer array.\n";
+        exit ( 1 );
+    }
+
+    for ( i = 0; i < m; i++ )
+    {
+        a[i] = new int[n];
+        if ( a[i] == NULL )
+        {
+            cerr << "\n";
+            cerr << "I4PP_NEW - Fatal error!\n";
+            cerr << "  Unable to allocate row array.\n";
+            exit ( 1 );
+        }
+    }
+
+    return a;
+}
+
 //****************************************************************************
 
-int main ( void ){
+int main ( int argc, char *argv[] ){
 
-
+  int n_nodes = atoi(argv[1]);
   int m = 1000;
   int n = 1000;
 
@@ -72,7 +131,7 @@ int main ( void ){
 
   wtime = omp_get_wtime ( );
 
-  /***************** Partie à paralléliser **********/
+  //***************** Partie à paralléliser
     for (i = 0; i < m; i++) {
         for (j = 0; j < n; j++) {
             x = ((double) (j - 1) * x_max + (double) (m - j) * x_min) / (double) (m - 1);
@@ -105,17 +164,17 @@ int main ( void ){
             }
         }
     }
-  /********************************************/
-  
+
+
   wtime = omp_get_wtime ( ) - wtime;
   cout << "\n";
   cout << "  Time = " << wtime << " seconds.\n";
 
-  /*
-    Write data to an ASCII PPM file.
-  */
+
+    //Write data to an ASCII PPM file.
+
   output.open ( filename.c_str ( ) );
-  
+
   output << "P3\n";
   output << n << "  " << m << "\n";
   output << 255 << "\n";
@@ -130,19 +189,21 @@ int main ( void ){
       output << "\n";
     }
   }
-  
+
   output.close ( );
   cout << "\n";
   cout << "  Graphics data written to \"" << filename << "\".\n";
-  /*
-    Free memory.
-  */
+
+  //    Free memory.
+
+
   i4pp_delete ( b, m, n );
   i4pp_delete ( g, m, n );
   i4pp_delete ( r, m, n );
-  /*
-    Terminate.
-  */
+
+  //  Terminate.
+
+
   cout << "\n";
   cout << "MANDELBROT_OPENMP\n";
   cout << "  Normal end of execution.\n";
