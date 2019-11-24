@@ -132,14 +132,19 @@ int main ( int argc, char *argv[] ){
   wtime = omp_get_wtime ( );
 
   //***************** Partie à paralléliser
+    //#pragma omp task 
     for (i = 0; i < m; i++) {
+
         for (j = 0; j < n; j++) {
             x = ((double) (j - 1) * x_max + (double) (m - j) * x_min) / (double) (m - 1);
             y = ((double) (i - 1) * y_max + (double) (n - i) * y_min) / (double) (n - 1);
             count = 0;
             x1 = x;
             y1 = y;
+            #pragma omp parallel for firstprivate(k)
+            {
 
+            }
             for (k = 1; k <= count_max; k++) {
                 x2 = x1 * x1 - y1 * y1 + x;
                 y2 = 2 * x1 * y1 + y;
