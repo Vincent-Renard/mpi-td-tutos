@@ -53,7 +53,7 @@ void Init_W(mnt *terrain) {
     int nr = terrain->get_nr();
 
     float *W = terrain->get_W_ptr();
-    float *Z = terrain->get_Z_ptr();
+    float *Z = terrain->get_Z_ptr();//HERE
     for (int i = 0; i < nr; i++) {
         W[i * nc] = Z[i * nc];
         W[i * nc + nc - 1] = Z[i * nc + nc - 1];
@@ -72,7 +72,7 @@ void Init_W(mnt *terrain) {
         W[j] = Z[j];
 }
 
-bool Remplissage(mnt *terrain) {
+bool Remplissage(mnt *terrain) {//HERE
 
     bool modification = false;
 
@@ -122,4 +122,3 @@ bool Remplissage(mnt *terrain) {
 
     return modification;
 }
-
