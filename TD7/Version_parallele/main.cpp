@@ -24,29 +24,30 @@ using namespace std;
 
 int main(int argc, char **argv) {
     char *nom = argv[1];
-    int nthreadsds = atoi(argv[2]);
-
+    int nthreads = atoi(argv[2]);
+    omp_set_num_threads(nthreads);
     mnt *terrain = Lecture_Terrain(nom);
-      terrain->printZ();
+      //terrain->printZ();
 
     terrain->set_max();
 
 
       cout << "max=" << terrain->get_max() <<"\n"<< "novalue=" << terrain->get_novalue() << endl;
     Init_W(terrain);
-    terrain->printW();
+    //terrain->printW();
     bool modification = true;
 
-      while (modification)
-        modification = Remplissage(terrain);
+      BENCHMARK(while (modification)
+        modification = Remplissage(terrain));
 
-    terrain->printW();
-
+    //terrain->printW();
+/*
      for (int i=0; i<terrain->get_nr(); i++) {
          for (int j = 0; j < terrain->get_nc(); j++)
              cout << terrain->get_Z(i, j) - terrain->get_W(i, j) << " ";
             cout << endl;
      }
+     */
 
     delete terrain;
     return 0;
