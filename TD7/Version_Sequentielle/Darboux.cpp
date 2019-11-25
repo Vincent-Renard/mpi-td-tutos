@@ -46,7 +46,7 @@ mnt *Lecture_Terrain(char *nom) {
     return terrain;
 }
 
-void Init_W(mnt *terrain) {
+void Init_W(mnt *terrain) {//HERE
 
     float no_value=terrain->get_novalue();
     int nc = terrain->get_nc();
@@ -108,11 +108,15 @@ bool Remplissage(mnt *terrain) {//HERE
                         Point *v2 = v1->Next_Voisin(centre);
                         v1->r = v2->r;
                         v1->c = v2->c;
+                        delete v2;
                     }
                 }
+                delete v1;
             }
+              delete centre;
         }
     }
+
 
     for (int i = 0; i < nr; i++)
         for (int j = 0; j < nc; j++)

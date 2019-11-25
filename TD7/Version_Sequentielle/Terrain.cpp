@@ -23,11 +23,16 @@ void mnt::set_novalue(float novalue)
 
 void mnt::set_max()
 {
+
+
     float max = 0.0;
-    for (int i = 0; i < t[0]; i++)
-        for (int j = 0; j < t[1]; j++)
-            if (Z[i * t[1] + j] > max)
-                max = Z[i * t[1] + j];
+    #pragma omp for
+    for (int i = 0; i < t[0]; i++){
+      for (int j = 0; j < t[1]; j++){
+        if (Z[i * t[1] + j] > max)
+            max = Z[i * t[1] + j];
+      }
+    }
     this->max = max;
 }
 
