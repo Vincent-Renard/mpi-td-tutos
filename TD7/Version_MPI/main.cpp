@@ -8,6 +8,7 @@
 #include <omp.h>
 #include "Terrain.h"
 #include "Darboux.h"
+#define ROOT 0
 
 #define BENCHMARK(fun)							\
 do { chrono::time_point<chrono::system_clock> start, end;		\
@@ -23,32 +24,38 @@ do { chrono::time_point<chrono::system_clock> start, end;		\
 using namespace std;
 
 int main(int argc, char **argv) {
-    char *nom = argv[1];
-    int nthreads = atoi(argv[2]);
-    omp_set_num_threads(nthreads);
-    mnt *terrain = Lecture_Terrain(nom);
-      //terrain->printZ();
+  char *nom = argv[1];
+  int nthreads = atoi(argv[2]);
 
-    terrain->set_max();
+  int pid, nprocs;
+  MPI_Init (&argc , &argv) ;
+  MPI_Comm_rank(MPI_COMM_WORLD, &pid ) ;
+  MPI_Comm_size (MPI_COMM_WORLD, &nprocs ) ;
+  if (pid==ROOT)
+  mnt *terrain = Lecture_Terrain(nom);
+  //terrain->printZ();
+
+  terrain->set_max();
 
 
-      cout << "max=" << terrain->get_max() <<"\n"<< "novalue=" << terrain->get_novalue() << endl;
-    Init_W(terrain);
-    //terrain->printW();
-    bool modification = true;
+  cout << "max=" << terrain->get_max() <<"\n"<< "novalue=" << terrain->get_novalue() << endl;
+  Init_W(terrain);
+  //terrain->printW();
+  bool modification = true;
 
-      BENCHMARK(while (modification)
-        modification = Remplissage(terrain));
+  
+  BENCHMARK(while (modification)
+  modification = Remplissage(terrain));
 
-    //terrain->printW();
-/*
-     for (int i=0; i<terrain->get_nr(); i++) {
-         for (int j = 0; j < terrain->get_nc(); j++)
-             cout << terrain->get_Z(i, j) - terrain->get_W(i, j) << " ";
-            cout << endl;
-     }
-     */
+  //terrain->printW();
+  /*
+  for (int i=0; i<terrain->get_nr(); i++) {
+  for (int j = 0; j < terrain->get_nc(); j++)
+  cout << terrain->get_Z(i, j) - terrain->get_W(i, j) << " ";
+  cout << endl;
+}
+*/
 
-    delete terrain;
-    return 0;
+delete terrain;
+return 0;
 }

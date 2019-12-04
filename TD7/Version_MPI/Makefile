@@ -1,13 +1,16 @@
-CXX = g++
+MPICXX = mpic++
 SRC= $(wildcard *.cpp)
 OBJ= $(SRC:.cpp=.o)
 EXEC= main
 
 %.o :%.cpp
-	$(CXX) -fopenmp -o  $@ -c $<
+	$(MPICXX) -o $@ -c $<
 
 main : $(OBJ)
-	$(CXX) -fopenmp -o  $@ $^
+	$(MPICXX) -o $@ $^
+
+run: main
+	OMPI_MCA_btl=self,tcp mpirun --oversubscribe -np 4 ./main grd_618360_6754408_2.txt 4 && rm -rf main *.o
 
 .PHONY: clean mrproper
 
